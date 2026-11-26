@@ -3,34 +3,115 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Moja strona</title>
+  <meta name="description" content="Polska — wizytówka serwera Discord z aktualną liczbą osób online.">
+  <meta name="theme-color" content="#fbf8f2">
+  <title>Polska · Discord</title>
   <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 24px;
+    :root {
+      color-scheme: light;
       font-family: system-ui, sans-serif;
-      background: #f2f5ff;
-      color: #182440;
+      background: #fbf8f2;
+      color: #26171a;
     }
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; min-width: 0; }
     main {
-      width: min(100%, 650px);
-      padding: clamp(28px, 8vw, 72px);
-      border: 1px solid #d7dff5;
-      border-radius: 24px;
-      background: #fff;
+      width: min(100% - 2rem, 72rem);
+      margin: 0 auto;
+      min-height: 100svh;
+      display: grid;
+      place-content: center stretch;
+      padding-block: 3rem;
     }
-    h1 { margin: 0 0 16px; font-size: clamp(2.5rem, 8vw, 4.5rem); line-height: 1; }
-    p { margin: 0; color: #4b5874; font-size: 1.125rem; line-height: 1.6; }
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(14rem, .7fr);
+      align-items: center;
+      gap: clamp(2rem, 6vw, 6rem);
+      padding-block: clamp(2rem, 7vw, 6rem);
+      padding-inline: clamp(.25rem, 3vw, 2.5rem);
+      border-block: 1px solid #decfd0;
+    }
+    .label { margin: 0 0 1rem; color: #7c2439; font-size: .85rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+    h1 {
+      margin: 0 0 1.2rem;
+      font: 400 clamp(3.45rem, 12vw, 9rem)/.9 Georgia, serif;
+      letter-spacing: -.075em;
+      overflow-wrap: anywhere;
+    }
+    .status { display: flex; align-items: center; gap: .65rem; min-height: 1.5rem; margin: 0; color: #534247; }
+    .dot { flex: 0 0 .6rem; height: .6rem; border-radius: 50%; background: #84787a; }
+    .status[data-state="ready"] .dot { background: #19754e; }
+    .join {
+      display: inline-block;
+      margin-top: 1.4rem;
+      padding: .75rem 1.1rem;
+      border-radius: .6rem;
+      background: #a31f40;
+      color: white;
+      font-weight: 650;
+      text-decoration: none;
+    }
+    .join:hover { background: #801632; }
+    .join:focus-visible { outline: 3px solid #801632; outline-offset: 4px; }
+    .join[hidden] { display: none; }
+    .flag {
+      aspect-ratio: 8 / 5;
+      margin: 0;
+      border: 1px solid #ead8db;
+      border-radius: 1.25rem;
+      background: linear-gradient(to bottom, #fff 50%, #dc143c 50%);
+      box-shadow: 0 1.1rem 2.75rem #5d16201c;
+    }
+    @media (max-width: 40rem) {
+      .hero { grid-template-columns: minmax(0, 1fr); }
+      .flag { width: min(100%, 24rem); }
+    }
   </style>
 </head>
 <body>
   <main>
-    <h1>Moja strona</h1>
-    <p>To moja strona startowa na GitHub Pages.</p>
+    <section class="hero" aria-labelledby="server-name">
+      <div>
+        <p class="label">Serwer Discord</p>
+        <h1 id="server-name">Polska</h1>
+        <p class="status" role="status">
+          <span class="dot" aria-hidden="true"></span>
+          <span id="online">Sprawdzanie liczby osób online…</span>
+        </p>
+        <a class="join" id="join" hidden>Dołącz do serwera</a>
+        <noscript><p>Włącz JavaScript, aby zobaczyć liczbę osób online.</p></noscript>
+      </div>
+      <div class="flag" aria-hidden="true"></div>
+    </section>
   </main>
+  <script type="module">
+    const widgetUrl = 'https://discord.com/api/guilds/1567957451788255352/widget.json';
+    const online = document.querySelector('#online');
+    const join = document.querySelector('#join');
+
+    try {
+      const response = await fetch(widgetUrl, { signal: AbortSignal.timeout(8000) });
+      if (!response.ok) throw new Error('Widget unavailable');
+      const widget = await response.json();
+
+      if (typeof widget.name === 'string' && widget.name.trim()) {
+        document.querySelector('#server-name').textContent = widget.name;
+        document.title = widget.name + ' · Discord';
+      }
+      if (!Number.isSafeInteger(widget.presence_count) || widget.presence_count < 0) {
+        throw new Error('Presence unavailable');
+      }
+      online.textContent = 'Osoby online: ' + new Intl.NumberFormat('pl-PL').format(widget.presence_count);
+      online.parentElement.dataset.state = 'ready';
+
+      if (typeof widget.instant_invite === 'string' && /^https:\/\/(?:discord\.gg\/|discord\.com\/invite\/)[A-Za-z0-9-]+\/?$/.test(widget.instant_invite)) {
+        join.href = widget.instant_invite;
+        join.hidden = false;
+      }
+    } catch {
+      online.textContent = 'Liczba osób online jest chwilowo niedostępna.';
+    }
+  </script>
 </body>
 </html>
