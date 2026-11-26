@@ -39,6 +39,15 @@
     .value { font-weight: 750; }
     .date { color: #665257; overflow-wrap: anywhere; }
     .channels { grid-column: 1 / -1; }
+    .channel-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin: 1rem 0 0; padding: 0; list-style: none; }
+    .channel-card { height: 100%; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: start; gap: .75rem; padding: 1rem; border: 1px solid #e0d1d0; border-radius: .65rem; background: #fffdfa; color: inherit; text-decoration: none; }
+    .channel-card:hover { border-color: #a32142; background: #f9f0f1; }
+    .channel-card:focus-visible { outline: 3px solid #7f1632; outline-offset: 3px; }
+    .channel-icon { display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: .4rem; background: #f6e6e9; color: #8d1d39; font-size: 1.15rem; font-weight: 700; }
+    .channel-name { display: block; margin-bottom: .15rem; color: #742039; font-weight: 700; }
+    .channel-description { display: block; color: #665257; font-size: .9rem; }
+    .channel-arrow { color: #82243c; }
+    @media (max-width: 35rem) { .channel-grid { grid-template-columns: minmax(0, 1fr); } }
     .channel-list { margin: .7rem 0 0; padding-left: 1.25rem; }
     .channel-list:empty { display: none; }
     .channel-link { color: #82243c; }
@@ -72,6 +81,26 @@
         <h2 id="daily-title">Najwyższy odczyt każdego dnia</h2>
         <p class="muted" id="daily-caption">Dni z pomiarem w ostatnich siedmiu dniach.</p>
         <ol class="chart" id="daily" aria-labelledby="daily-title"></ol>
+      </section>
+      <section class="panel channels" aria-labelledby="start-channels-title">
+        <h2 id="start-channels-title">Kanały startowe</h2>
+        <p class="muted">Linki otwierają kanały na Discordzie i wymagają dostępu do serwera.</p>
+        <ul class="channel-grid">
+          <li>
+            <a class="channel-card" href="https://discord.com/channels/1567957451788255352/1572315637743755405">
+              <span class="channel-icon" aria-hidden="true">#</span>
+              <span><span class="channel-name">Witamy</span><span class="channel-description">Kanał powitalny serwera Polska.</span></span>
+              <span class="channel-arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+          <li>
+            <a class="channel-card" href="https://discord.com/channels/1567957451788255352/1572315672900272180">
+              <span class="channel-icon" aria-hidden="true">#</span>
+              <span><span class="channel-name">Weryfikacja</span><span class="channel-description">Przejdź do weryfikacji na Discordzie.</span></span>
+              <span class="channel-arrow" aria-hidden="true">↗</span>
+            </a>
+          </li>
+        </ul>
       </section>
       <section class="panel channels" aria-labelledby="channels-title">
         <h2 id="channels-title">Kanały głosowe i sceniczne</h2>
@@ -155,7 +184,7 @@
       const list = byId('channels');
       list.replaceChildren();
       byId('channel-count').textContent = number.format(channels.length);
-      byId('channel-message').textContent = channels.length ? 'Kanały publiczne udostępnione w widżecie Discorda.' : 'Widżet Discorda nie udostępnia żadnych kanałów.';
+      byId('channel-message').textContent = channels.length ? 'Kanały publiczne udostępnione w widżecie Discorda.' : 'Widżet Discorda nie udostępnia obecnie kanałów głosowych ani scenicznych.';
       for (const { id, name } of channels) {
         const item = document.createElement('li');
         const link = document.createElement('a');
