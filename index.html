@@ -3,11 +3,99 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="refresh" content="0; url=https://disworld.wynszer.xyz/">
-  <link rel="canonical" href="https://disworld.wynszer.xyz/">
-  <title>Disworld</title>
+  <meta name="description" content="Polska community w disWorld. Profil państwa, terytorium i społeczność.">
+  <meta name="theme-color" content="#f1eee5">
+  <title>Polska community w disWorld</title>
+  <style>
+    :root { color-scheme: light; --paper: #f1eee5; --ink: #202d26; --accent: #8c2340; --muted: #505c51; --line: #c9c8b9; font: 16px/1.58 system-ui, sans-serif; background: var(--paper); color: var(--ink); }
+    *, *::before, *::after { box-sizing: border-box; }
+    body { margin: 0; }
+    a { color: inherit; }
+    a:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+    [hidden] { display: none !important; }
+    .shell { width: min(100% - 2.5rem, 72rem); margin-inline: auto; }
+    header .shell { min-height: 4.75rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+    .wordmark { display: flex; align-items: center; gap: .65rem; font-weight: 750; }
+    .flag { display: block; flex: 0 0 auto; width: 1.5rem; height: 1rem; border-radius: .12rem; box-shadow: 0 0 0 1px #7b514850; background: linear-gradient(#fff 50%, #ba2642 50%); }
+    nav { display: flex; flex-wrap: wrap; gap: 1rem; font-size: .9rem; }
+    nav a { text-decoration-color: #9b9b8f; text-underline-offset: .3em; }
+    .hero { display: grid; grid-template-columns: 1.25fr 1fr; min-height: 28rem; border: 1px solid var(--line); border-top: .35rem solid var(--accent); }
+    .hero-copy { padding: clamp(1.4rem, 5vw, 4.5rem); align-self: center; }
+    h1, h2, p { margin: 0; }
+    h1 { font: 400 clamp(3.9rem, 11vw, 8.4rem)/.9 Georgia, serif; letter-spacing: -.075em; }
+    .subtitle { margin-top: .55rem; font: 400 clamp(1.65rem, 4vw, 3rem)/1 Georgia, serif; color: var(--accent); }
+    .intro { margin: 1.4rem 0 1.65rem; max-width: 32ch; color: var(--muted); font-size: 1.05rem; }
+    .button { display: inline-block; border-radius: .3rem; padding: .65rem 1rem; background: var(--accent); color: #fff; font-weight: 650; text-decoration: none; }
+    .button:hover { background: #6e1831; }
+    .atlas { display: grid; place-items: center; min-height: 13rem; overflow: hidden; background-color: #26382e; background-image: repeating-linear-gradient(0deg, transparent 0 36px, #d2ddab1b 36px 37px), repeating-linear-gradient(90deg, transparent 0 36px, #d2ddab1b 36px 37px); }
+    .emblem { width: min(57%, 15rem); aspect-ratio: 1; display: grid; place-items: center; border: 1px solid #e4d7a67d; border-radius: 50%; outline: 1px solid #e4d7a645; outline-offset: .65rem; }
+    .emblem .flag { width: 64%; height: auto; aspect-ratio: 8 / 5; border-radius: .35rem; box-shadow: 0 .6rem 1.8rem #121e16aa; }
+    .details { display: grid; grid-template-columns: 1fr 1fr; margin-block: 1.5rem 3rem; border: 1px solid var(--line); }
+    .details section { padding: clamp(1.25rem, 4vw, 2.5rem); }
+    .details section + section { border-left: 1px solid var(--line); }
+    h2 { font: 400 clamp(1.5rem, 4vw, 2.25rem)/1.05 Georgia, serif; }
+    .details p { margin-top: .75rem; max-width: 46ch; color: var(--muted); }
+    .details a { display: inline-block; margin-top: .8rem; color: var(--accent); font-weight: 650; text-underline-offset: .2em; }
+    .details .discord-status { font-size: .9rem; }
+    .stats { display: flex; flex-wrap: wrap; gap: 1rem 1.5rem; margin: 1rem 0 0; }
+    .stats dt { color: var(--muted); font-size: .9rem; }
+    .stats dd { margin: .15rem 0 0; font-size: 1.3rem; font-weight: 700; }
+    @media (max-width: 42rem) {
+      .hero, .details { grid-template-columns: 1fr; }
+      .details section + section { border-left: 0; border-top: 1px solid var(--line); }
+      .atlas { min-height: 10rem; }
+      .emblem { width: 7.5rem; }
+    }
+  </style>
 </head>
 <body>
-  <p><a href="https://disworld.wynszer.xyz/">Przejdź do Disworld</a></p>
+  <header>
+    <div class="shell">
+      <span class="wordmark"><span class="flag" aria-hidden="true"></span>Polska</span>
+      <nav aria-label="Nawigacja"><a href="#panstwo">Państwo</a><a href="#discord">Discord</a></nav>
+    </div>
+  </header>
+  <main class="shell">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="hero-copy">
+        <h1 id="page-title">Polska</h1>
+        <p class="subtitle">community w disWorld</p>
+        <p class="intro">Państwo w grze disWorld i społeczność serwera Polska na Discordzie.</p>
+        <a class="button" href="https://disworld.wynszer.xyz/?panstwo=6b08677782718b003e9d779f">Zobacz państwo na mapie</a>
+      </div>
+      <div class="atlas" aria-hidden="true"><div class="emblem"><span class="flag"></span></div></div>
+    </section>
+    <div class="details">
+      <section id="panstwo" aria-labelledby="country-title">
+        <h2 id="country-title">Państwo w liczbach</h2>
+        <dl class="stats">
+          <div><dt>Terytorium</dt><dd>2 pola</dd></div>
+          <div><dt>Obywatele</dt><dd>80</dd></div>
+          <div><dt>Miasta</dt><dd>1</dd></div>
+        </dl>
+        <p class="discord-status">Odczyt z gry z 26 listopada 2026.</p>
+        <a href="https://disworld.wynszer.xyz/ranking">Zobacz ranking państw</a>
+      </section>
+      <section id="discord" aria-labelledby="discord-title">
+        <h2 id="discord-title">Społeczność na Discordzie</h2>
+        <p class="discord-status" id="discord-status" role="status">Sprawdzanie liczby osób online…</p>
+        <a href="https://discord.com/channels/1567957451788255352">Otwórz serwer Polska</a>
+      </section>
+    </div>
+  </main>
+  <script type="module">
+    const status = document.getElementById('discord-status');
+    try {
+      const response = await fetch('https://discord.com/api/guilds/1567957451788255352/widget.json', {
+        signal: AbortSignal.timeout(8000)
+      });
+      if (!response.ok) throw new Error('Widget unavailable');
+      const { presence_count: online } = await response.json();
+      if (!Number.isSafeInteger(online) || online < 0) throw new Error('Invalid count');
+      status.textContent = 'Osoby online: ' + new Intl.NumberFormat('pl-PL').format(online);
+    } catch {
+      status.textContent = 'Liczba osób online jest chwilowo niedostępna.';
+    }
+  </script>
 </body>
 </html>
