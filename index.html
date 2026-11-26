@@ -39,14 +39,14 @@
     .value { font-weight: 750; }
     .date { color: #665257; overflow-wrap: anywhere; }
     .channels { grid-column: 1 / -1; }
-    .channel-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin: 1rem 0 0; padding: 0; list-style: none; }
-    .channel-card { height: 100%; display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: start; gap: .75rem; padding: 1rem; border: 1px solid #e0d1d0; border-radius: .65rem; background: #fffdfa; color: inherit; text-decoration: none; }
-    .channel-card:hover { border-color: #a32142; background: #f9f0f1; }
-    .channel-card:focus-visible { outline: 3px solid #7f1632; outline-offset: 3px; }
-    .channel-icon { display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: .4rem; background: #f6e6e9; color: #8d1d39; font-size: 1.15rem; font-weight: 700; }
-    .channel-name { display: block; margin-bottom: .15rem; color: #742039; font-weight: 700; }
-    .channel-description { display: block; color: #665257; font-size: .9rem; }
-    .channel-arrow { color: #82243c; }
+    .channel-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-top: 1rem; }
+    .channel-preview { min-width: 0; border: 1px solid #e0d1d0; border-radius: .65rem; background: #fffdfa; overflow: hidden; }
+    .preview-title { display: flex; align-items: center; gap: .55rem; margin: 0; padding: .65rem 1rem; border-bottom: 1px solid #e0d1d0; background: #f8eef0; color: #742039; font-size: 1rem; }
+    .channel-icon { color: #8d1d39; font-size: 1.15rem; }
+    .preview-body { padding: .95rem 1rem 1rem; }
+    .preview-body p + p { margin-top: .5rem; }
+    .preview-quote { margin: .15rem 0 .65rem; padding-left: .75rem; border-left: .2rem solid #a32142; font-weight: 650; }
+    .preview-body .channel-link { display: inline-block; margin-top: .8rem; font-size: .9rem; font-weight: 650; }
     @media (max-width: 35rem) { .channel-grid { grid-template-columns: minmax(0, 1fr); } }
     .channel-list { margin: .7rem 0 0; padding-left: 1.25rem; }
     .channel-list:empty { display: none; }
@@ -83,24 +83,24 @@
         <ol class="chart" id="daily" aria-labelledby="daily-title"></ol>
       </section>
       <section class="panel channels" aria-labelledby="start-channels-title">
-        <h2 id="start-channels-title">Kanały startowe</h2>
-        <p class="muted">Linki otwierają kanały na Discordzie i wymagają dostępu do serwera.</p>
-        <ul class="channel-grid">
-          <li>
-            <a class="channel-card" href="https://discord.com/channels/1567957451788255352/1572315637743755405">
-              <span class="channel-icon" aria-hidden="true">#</span>
-              <span><span class="channel-name">Witamy</span><span class="channel-description">Kanał powitalny serwera Polska.</span></span>
-              <span class="channel-arrow" aria-hidden="true">↗</span>
-            </a>
-          </li>
-          <li>
-            <a class="channel-card" href="https://discord.com/channels/1567957451788255352/1572315672900272180">
-              <span class="channel-icon" aria-hidden="true">#</span>
-              <span><span class="channel-name">Weryfikacja</span><span class="channel-description">Przejdź do weryfikacji na Discordzie.</span></span>
-              <span class="channel-arrow" aria-hidden="true">↗</span>
-            </a>
-          </li>
-        </ul>
+        <h2 id="start-channels-title">Podgląd kanałów</h2>
+        <div class="channel-grid">
+          <article class="channel-preview" aria-labelledby="welcome-title">
+            <h3 class="preview-title" id="welcome-title"><span class="channel-icon" aria-hidden="true">#</span> Witamy</h3>
+            <div class="preview-body">
+              <p><strong>Witamy na serwerze Polska!</strong></p>
+              <p class="muted">Na tym kanale Discord wita osoby, które dołączyły do serwera. Jeśli dopiero zaczynasz, przejdź do kanału Weryfikacja.</p>
+            </div>
+          </article>
+          <article class="channel-preview" aria-labelledby="verification-title">
+            <h3 class="preview-title" id="verification-title"><span class="channel-icon" aria-hidden="true">#</span> Weryfikacja</h3>
+            <div class="preview-body">
+              <blockquote class="preview-quote">Kliknij aby się zweryfikować</blockquote>
+              <p class="muted">Aby się zweryfikować, dodaj reakcję ✅ pod tą wiadomością na Discordzie.</p>
+              <a class="channel-link" href="https://discord.com/channels/1567957451788255352/1572315672900272180">Przejdź do weryfikacji na Discordzie</a>
+            </div>
+          </article>
+        </div>
       </section>
       <section class="panel channels" aria-labelledby="channels-title">
         <h2 id="channels-title">Kanały głosowe i sceniczne</h2>
