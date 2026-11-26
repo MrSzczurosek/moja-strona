@@ -3,115 +3,219 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Polska — wizytówka serwera Discord z aktualną liczbą osób online.">
-  <meta name="theme-color" content="#fbf8f2">
+  <meta name="description" content="Statystyki i publiczne kanały serwera Polska na Discordzie.">
+  <meta name="theme-color" content="#f9f5ee">
   <title>Polska · Discord</title>
   <style>
-    :root {
-      color-scheme: light;
-      font-family: system-ui, sans-serif;
-      background: #fbf8f2;
-      color: #26171a;
-    }
+    :root { color-scheme: light; font: 16px/1.5 system-ui, sans-serif; background: #f9f5ee; color: #2c2022; }
     *, *::before, *::after { box-sizing: border-box; }
-    body { margin: 0; min-width: 0; }
-    main {
-      width: min(100% - 2rem, 72rem);
-      margin: 0 auto;
-      min-height: 100svh;
-      display: grid;
-      place-content: center stretch;
-      padding-block: 3rem;
-    }
-    .hero {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(14rem, .7fr);
-      align-items: center;
-      gap: clamp(2rem, 6vw, 6rem);
-      padding-block: clamp(2rem, 7vw, 6rem);
-      padding-inline: clamp(.25rem, 3vw, 2.5rem);
-      border-block: 1px solid #decfd0;
-    }
-    .label { margin: 0 0 1rem; color: #7c2439; font-size: .85rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
-    h1 {
-      margin: 0 0 1.2rem;
-      font: 400 clamp(3.45rem, 12vw, 9rem)/.9 Georgia, serif;
-      letter-spacing: -.075em;
-      overflow-wrap: anywhere;
-    }
-    .status { display: flex; align-items: center; gap: .65rem; min-height: 1.5rem; margin: 0; color: #534247; }
-    .dot { flex: 0 0 .6rem; height: .6rem; border-radius: 50%; background: #84787a; }
-    .status[data-state="ready"] .dot { background: #19754e; }
-    .join {
-      display: inline-block;
-      margin-top: 1.4rem;
-      padding: .75rem 1.1rem;
-      border-radius: .6rem;
-      background: #a31f40;
-      color: white;
-      font-weight: 650;
-      text-decoration: none;
-    }
-    .join:hover { background: #801632; }
-    .join:focus-visible { outline: 3px solid #801632; outline-offset: 4px; }
-    .join[hidden] { display: none; }
-    .flag {
-      aspect-ratio: 8 / 5;
-      margin: 0;
-      border: 1px solid #ead8db;
-      border-radius: 1.25rem;
-      background: linear-gradient(to bottom, #fff 50%, #dc143c 50%);
-      box-shadow: 0 1.1rem 2.75rem #5d16201c;
-    }
-    @media (max-width: 40rem) {
-      .hero { grid-template-columns: minmax(0, 1fr); }
-      .flag { width: min(100%, 24rem); }
-    }
+    body { margin: 0; }
+    main { width: min(100% - 2rem, 70rem); margin: auto; padding: clamp(1.75rem, 5vw, 4.5rem) 0; }
+    h1, h2, p { margin: 0; }
+    h1 { font: 400 clamp(3.75rem, 12vw, 8rem)/.95 Georgia, serif; letter-spacing: -.07em; overflow-wrap: anywhere; }
+    h2 { margin-bottom: .25rem; font-size: 1.15rem; }
+    .hero { padding: 1.5rem 0 2rem; border-top: .35rem solid #a32142; display: flex; align-items: end; justify-content: space-between; flex-wrap: wrap; gap: 1.5rem; }
+    .label { color: #82243c; font-size: .85rem; font-weight: 750; letter-spacing: .10em; text-transform: uppercase; margin-bottom: .7rem; }
+    .actions { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; }
+    .action { padding: .65rem .9rem; border: 1px solid #d9c8cb; border-radius: .55rem; background: #fffdfa; color: #6b2236; text-decoration: none; font: inherit; font-weight: 650; }
+    .action:hover { background: #f4e8ea; }
+    .action:focus-visible, .channel-link:focus-visible { outline: 3px solid #7f1632; outline-offset: 3px; }
+    button.action { cursor: pointer; }
+    button.action:disabled { cursor: wait; }
+    .primary { background: #8d1d39; color: white; border-color: #8d1d39; }
+    .primary:hover { background: #74162f; }
+    [hidden] { display: none !important; }
+    .metrics { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-bottom: .8rem; }
+    .panel, .metric { border: 1px solid #e0d1d0; background: #fffdfa; border-radius: .9rem; padding: clamp(1rem, 3vw, 1.5rem); min-width: 0; }
+    .metric dt, .muted { color: #665257; }
+    .metric dd { margin: .15rem 0 0; font-size: clamp(2rem, 6vw, 3.1rem); line-height: 1.05; font-weight: 700; font-variant-numeric: tabular-nums; }
+    .status { min-height: 1.5rem; margin-bottom: 1.45rem; color: #665257; font-size: .9rem; }
+    .dashboard { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+    .chart { list-style: none; margin: 1rem 0 0; padding: 0; display: grid; grid-template-columns: repeat(var(--columns, 1), minmax(0, 1fr)); gap: .4rem; }
+    .bar-item { display: grid; grid-template-rows: 6.2rem auto; gap: .4rem; min-width: 0; text-align: center; }
+    .plot-column { display: flex; flex-direction: column; justify-content: flex-end; align-items: stretch; gap: .2rem; border-bottom: 1px solid #dfcacc; }
+    .bar { display: block; width: min(100%, 3rem); margin-inline: auto; min-height: 2px; background: #a32142; border-radius: .28rem .28rem 0 0; }
+    .value, .date { font-size: .75rem; line-height: 1.2; font-variant-numeric: tabular-nums; }
+    .value { font-weight: 750; }
+    .date { color: #665257; overflow-wrap: anywhere; }
+    .channels { grid-column: 1 / -1; }
+    .channel-list { margin: .7rem 0 0; padding-left: 1.25rem; }
+    .channel-list:empty { display: none; }
+    .channel-link { color: #82243c; }
+    .history-note { margin: .9rem 0 0; font-size: .9rem; }
+    @media (max-width: 43rem) { .dashboard { grid-template-columns: minmax(0, 1fr); } }
   </style>
 </head>
 <body>
   <main>
-    <section class="hero" aria-labelledby="server-name">
-      <div>
-        <p class="label">Serwer Discord</p>
-        <h1 id="server-name">Polska</h1>
-        <p class="status" role="status">
-          <span class="dot" aria-hidden="true"></span>
-          <span id="online">Sprawdzanie liczby osób online…</span>
-        </p>
-        <a class="join" id="join" hidden>Dołącz do serwera</a>
-        <noscript><p>Włącz JavaScript, aby zobaczyć liczbę osób online.</p></noscript>
+    <header class="hero">
+      <div><p class="label">Serwer Discord</p><h1 id="server-name">Polska</h1></div>
+      <div class="actions">
+        <a class="action primary" id="join" hidden>Dołącz do serwera</a>
+        <a class="action" href="https://discord.com/channels/1567957451788255352">Otwórz na Discordzie</a>
+        <button class="action" id="refresh" type="button">Odśwież dane</button>
       </div>
-      <div class="flag" aria-hidden="true"></div>
-    </section>
+    </header>
+    <dl class="metrics">
+      <div class="metric"><dt>Osoby online</dt><dd id="online">—</dd></div>
+      <div class="metric"><dt>Kanały w widżecie</dt><dd id="channel-count">—</dd></div>
+    </dl>
+    <p class="status" id="status" role="status">Pobieranie danych z Discorda…</p>
+    <noscript><p>Włącz JavaScript, aby pobierać dane i rysować wykresy.</p></noscript>
+    <div class="dashboard">
+      <section class="panel" aria-labelledby="recent-title">
+        <h2 id="recent-title">Ostatnie pomiary online</h2>
+        <p class="muted" id="recent-caption">Do sześciu ostatnich odczytów.</p>
+        <ol class="chart" id="recent" aria-labelledby="recent-title"></ol>
+      </section>
+      <section class="panel" aria-labelledby="daily-title">
+        <h2 id="daily-title">Najwyższy odczyt każdego dnia</h2>
+        <p class="muted" id="daily-caption">Dni z pomiarem w ostatnich siedmiu dniach.</p>
+        <ol class="chart" id="daily" aria-labelledby="daily-title"></ol>
+      </section>
+      <section class="panel channels" aria-labelledby="channels-title">
+        <h2 id="channels-title">Kanały głosowe i sceniczne</h2>
+        <p class="muted" id="channel-message">Pobieranie kanałów z widżetu…</p>
+        <ul class="channel-list" id="channels"></ul>
+      </section>
+    </div>
+    <p class="muted history-note">Historia zapisuje się w tej przeglądarce. Nowy pomiar jest zapisywany najwyżej co 5 minut, gdy strona jest otwarta. Godziny w strefie Warszawy.</p>
   </main>
   <script type="module">
-    const widgetUrl = 'https://discord.com/api/guilds/1567957451788255352/widget.json';
-    const online = document.querySelector('#online');
-    const join = document.querySelector('#join');
+    const serverId = '1567957451788255352';
+    const widgetUrl = 'https://discord.com/api/guilds/' + serverId + '/widget.json';
+    const storageKey = 'discord-online-' + serverId;
+    const interval = 5 * 60 * 1000;
+    const timeZone = 'Europe/Warsaw';
+    const number = new Intl.NumberFormat('pl-PL');
+    const time = new Intl.DateTimeFormat('pl-PL', { timeZone, hour: '2-digit', minute: '2-digit' });
+    const date = new Intl.DateTimeFormat('pl-PL', { timeZone, day: '2-digit', month: '2-digit' });
+    const calendar = new Intl.DateTimeFormat('sv-SE', { timeZone, year: 'numeric', month: '2-digit', day: '2-digit' });
+    const byId = (id) => document.getElementById(id);
+    const refresh = byId('refresh');
+    const status = byId('status');
+    const join = byId('join');
+    let history = [];
 
     try {
-      const response = await fetch(widgetUrl, { signal: AbortSignal.timeout(8000) });
-      if (!response.ok) throw new Error('Widget unavailable');
-      const widget = await response.json();
-
-      if (typeof widget.name === 'string' && widget.name.trim()) {
-        document.querySelector('#server-name').textContent = widget.name;
-        document.title = widget.name + ' · Discord';
-      }
-      if (!Number.isSafeInteger(widget.presence_count) || widget.presence_count < 0) {
-        throw new Error('Presence unavailable');
-      }
-      online.textContent = 'Osoby online: ' + new Intl.NumberFormat('pl-PL').format(widget.presence_count);
-      online.parentElement.dataset.state = 'ready';
-
-      if (typeof widget.instant_invite === 'string' && /^https:\/\/(?:discord\.gg\/|discord\.com\/invite\/)[A-Za-z0-9-]+\/?$/.test(widget.instant_invite)) {
-        join.href = widget.instant_invite;
-        join.hidden = false;
+      const saved = JSON.parse(localStorage.getItem(storageKey) || '[]');
+      if (Array.isArray(saved)) {
+        history = saved.filter((point) => Number.isSafeInteger(point?.at) &&
+          point.at > 0 && point.at <= Date.now() && Number.isSafeInteger(point.count) && point.count >= 0);
+        history.sort((a, b) => a.at - b.at);
       }
     } catch {
-      online.textContent = 'Liczba osób online jest chwilowo niedostępna.';
+      // The statistics still work in memory when browser storage is unavailable.
     }
+
+    function drawChart(id, points, labelFor) {
+      const chart = byId(id);
+      chart.replaceChildren();
+      chart.style.setProperty('--columns', Math.max(1, points.length));
+      const maximum = Math.max(1, ...points.map((point) => point.count));
+
+      for (const point of points) {
+        const item = document.createElement('li');
+        item.className = 'bar-item';
+        const column = document.createElement('div');
+        column.className = 'plot-column';
+        const value = document.createElement('span');
+        value.className = 'value';
+        value.textContent = number.format(point.count);
+        const bar = document.createElement('span');
+        bar.className = 'bar';
+        bar.setAttribute('aria-hidden', 'true');
+        bar.style.height = (point.count / maximum) * 75 + '%';
+        const label = document.createElement('span');
+        label.className = 'date';
+        label.textContent = labelFor(point.at);
+        column.append(value, bar);
+        item.append(column, label);
+        chart.append(item);
+      }
+    }
+
+    function drawHistory(now) {
+      const [year, month, day] = calendar.format(now).split('-').map(Number);
+      const firstDay = new Date(Date.UTC(year, month - 1, day - 6)).toISOString().slice(0, 10);
+      history = history.filter((point) => calendar.format(point.at) >= firstDay);
+      const recent = history.slice(-6);
+      const daily = new Map();
+      for (const point of history) {
+        const key = calendar.format(point.at);
+        if (!daily.has(key) || point.count > daily.get(key).count) daily.set(key, point);
+      }
+      drawChart('recent', recent, (at) => date.format(at) + ' ' + time.format(at));
+      drawChart('daily', [...daily.values()], (at) => date.format(at));
+      byId('recent-caption').textContent = recent.length ? 'Do sześciu ostatnich odczytów.' : 'Wykres pojawi się po pierwszym odczycie.';
+      byId('daily-caption').textContent = daily.size ? 'Dni z pomiarem w ostatnich siedmiu dniach.' : 'Wykres pojawi się po pierwszym odczycie.';
+    }
+
+    function drawChannels(channels) {
+      const list = byId('channels');
+      list.replaceChildren();
+      byId('channel-count').textContent = number.format(channels.length);
+      byId('channel-message').textContent = channels.length ? 'Kanały publiczne udostępnione w widżecie Discorda.' : 'Widżet Discorda nie udostępnia żadnych kanałów.';
+      for (const { id, name } of channels) {
+        const item = document.createElement('li');
+        const link = document.createElement('a');
+        link.className = 'channel-link';
+        link.href = 'https://discord.com/channels/' + serverId + '/' + id;
+        link.textContent = name;
+        item.append(link);
+        list.append(item);
+      }
+    }
+
+    async function loadWidget() {
+      if (refresh.disabled) return;
+      refresh.disabled = true;
+      try {
+        const response = await fetch(widgetUrl, { cache: 'no-store', signal: AbortSignal.timeout(8000) });
+        if (!response.ok) throw new Error('Widget unavailable');
+        const widget = await response.json();
+        if (!Number.isSafeInteger(widget.presence_count) || widget.presence_count < 0) throw new Error('Invalid presence');
+        const now = Date.now();
+        byId('online').textContent = number.format(widget.presence_count);
+        const channels = Array.isArray(widget.channels) ? widget.channels.filter((channel) =>
+          typeof channel?.id === 'string' && /^\d{17,20}$/.test(channel.id) && typeof channel.name === 'string') : [];
+        drawChannels(channels);
+
+        if (typeof widget.name === 'string' && widget.name.trim()) {
+          byId('server-name').textContent = widget.name;
+          document.title = widget.name + ' · Discord';
+        }
+        const invite = widget.instant_invite;
+        join.hidden = typeof invite !== 'string' || !/^https:\/\/(?:discord\.gg\/|discord\.com\/invite\/)[A-Za-z0-9-]+\/?$/.test(invite);
+        if (join.hidden) join.removeAttribute('href');
+        else join.href = invite;
+
+        if (!history.length || now - history[history.length - 1].at >= interval) {
+          history.push({ at: now, count: widget.presence_count });
+        }
+        drawHistory(now);
+        try { localStorage.setItem(storageKey, JSON.stringify(history)); } catch {
+          // Keep using the in-memory measurements.
+        }
+        status.textContent = 'Ostatnie odświeżenie: ' + time.format(now) + ' · dane z Discorda';
+      } catch {
+        status.textContent = 'Nie udało się odświeżyć danych z Discorda.';
+        if (byId('online').textContent === '—') {
+          byId('channel-message').textContent = 'Podgląd kanałów jest chwilowo niedostępny.';
+        } else {
+          status.textContent += ' Wyświetlamy ostatnie dostępne dane.';
+        }
+      } finally {
+        refresh.disabled = false;
+      }
+    }
+
+    drawHistory(Date.now());
+    refresh.addEventListener('click', loadWidget);
+    loadWidget();
+    setInterval(() => {
+      if (!document.hidden) loadWidget();
+    }, interval);
   </script>
 </body>
 </html>
